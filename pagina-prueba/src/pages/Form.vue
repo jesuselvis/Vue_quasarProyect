@@ -8,6 +8,7 @@
             class="row q-col-gutter-md"
             @submit.prevent="procesarFormulario"
             @reset="reset"
+            ref="myForm"
         
         > 
 
@@ -15,6 +16,7 @@
                 <q-input
                     label="Producto"
                     v-model="producto"
+                    lazy-rules
                     :rules="[ val => val && val.length > 0 || 'No ingresaste nada.']"
                 />
             </div>
@@ -24,6 +26,7 @@
                     label="Prioridad"
                     v-model="seleccion"
                     :options="opciones"
+                    lazy-rules
                     :rules="[ val => val && val.length > 0 || 'No ingresaste nada.']"
                 />
             </div>
@@ -52,56 +55,75 @@
                 />
             </div>
         </q-form>
-            
+        <pintar-datos :productos="productos"
+        
+        />
     </q-page>
 </template>
 
 <script>
 import {ref} from 'vue'
 import { useQuasar } from 'quasar'
+import PintarDatos from 'src/components/PintarDatos.vue';
+
 export default{
-    setup(){
-        const $q = useQuasar()
-        const producto = ref(null)
-        const seleccion = ref(null)
-        const opciones = ['maxima','moderada','minima']
+    components:{PintarDatos},
+    setup() {
+        const $q = useQuasar();
+        const myForm = ref(null)
+        const producto = ref(null);
+        const seleccion = ref(null);
+        const opciones = ["maxima", "moderada", "minima"];
+
+        const productos = ref([])
 
         const procesarFormulario = () => {
-            console.log("Me diste click al formulario")
-            if (terminos.value === false){
+            console.log("Me diste click al formulario");
+            if (terminos.value === false) {
                 $q.notify({
-                    color: 'red-5',
-                    textColor: 'white',
-                    icon: 'warning',
-                    message: 'Tu no aceptastes los terminos'
-                })
+                    color: "red-5",
+                    textColor: "white",
+                    icon: "warning",
+                    message: "Tu no aceptastes los terminos"
+                });
             }
             else {
                 $q.notify({
-                    color: 'green-4',
-                    textColor: 'white',
-                    icon: 'cloud_done',
-                    message: 'Submitted'
-                })
+                    color: "green-4",
+                    textColor: "white",
+                    icon: "cloud_done",
+                    message: "Submitted"
+                });
+
+                myForm.value.resetValidation()
+        
+                //procesar el formulario
+                productos.value =  [...productos.value,{
+                    producto: producto.value,
+                    prioridad: seleccion.value
+                }]
+                
+                reset()
+
             }
-        }
-
-        const terminos = ref(false)
-
+        };
+        const terminos = ref(false);
         const reset = () => {
-            producto.value = null
-            seleccion.value = null
-            terminos.value = false
-        }
-
-        return{
+            producto.value = null;
+            seleccion.value = null;
+            terminos.value = false;
+        };
+        return {
             producto,
             seleccion,
             opciones,
             procesarFormulario,
             terminos,
-            reset
-        }
-    },
+            reset,
+            productos,
+            myForm
+        };
+    }, 
+    
 }
 </script>
