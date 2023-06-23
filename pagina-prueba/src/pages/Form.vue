@@ -48,7 +48,8 @@
                 <q-btn  
                     color="primary" 
                     label="Reset"  
-                    outline 
+                    outline
+                    icon-right="ti-microsoft-alt" 
                     class="q-ml-sm"
                     :ripple="false"
                     type="reset"
@@ -102,7 +103,7 @@ export default{
                     producto: producto.value,
                     prioridad: seleccion.value
                 }]
-                
+
                 reset()
 
             }
